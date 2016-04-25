@@ -38,9 +38,11 @@ postconf -e 'inet_protocols = ipv4'
 postconf -e 'myhostname = poste.xtremxpert.com'
 postconf -e 'mydomain = xtremxpert.com'
 postconf -e 'myorigin = xtremxpert.com'
-postconf -e 'mydestination = xtremxpert.com'
+postconf -e 'mydestination = poste.xtremxpert.com, xtremxpert.com, localhost, localhost.localdomain'
 postconf -e 'mynetworks = 127.0.0.0/8,192.99.24.64/28'
 postconf -e 'relay_domains = xtremxpert.com'
+postconf -e 'mailbox_size_limit = 0'
+postconf -e 'recipient_delimiter = +'
 ############
 # SASL SUPPORT FOR CLIENTS
 # The following options set parameters needed by Postfix to enable
@@ -66,6 +68,26 @@ postconf -e 'relay_domains = xtremxpert.com'
 ############
 # Enable TLS
 ############
+############
+# SUBMISSION
+# Activate submission port as an alternative to send mail
+# Will accept only secure
+############
+postconf -M submission/inet="submission   inet   n   -   -   -   -   smtpd"
+postconf -P "submission/inet/syslog_name=postfix/submission"
+#postconf -p "submission/inet/smtpd_tls_wrappermode=no"
+postconf -P "submission/inet/smtpd_tls_security_level=encrypt"
+postconf -P "submission/inet/smtpd_sasl_auth_enable=yes"
+postconf -P "submission/inet/smtpd_recipient_restrictions=permit_mynetworks,permit_sasl_authenticated,reject"
+postconf -P "submission/inet/milter_macro_daemon_name=ORIGINATING"
+#postconf -P "submission/inet/smtpd_sasl_type=dovecot"
+#postconf -P "submission/inet/smtpd_sasl_path=private/auth"
+#postconf -P "submission/inet/smtpd_etrn_restrictions=reject"
+#postconf -P "submission/inet/smtpd_sasl_security_options=noanonymous"
+#postconf -P "submission/inet/smtpd_sasl_local_domain=$myhostname"
+#postconf -P "submission/inet/smtpd_client_restrictions=permit_sasl_authenticated,reject"
+
+
 #if [[ -n "$(find /etc/postfix/certs -iname *.crt)" && -n "$(find /etc/postfix/certs -iname *.key)" ]]; then
   # /etc/postfix/main.cf
 #  postconf -e smtpd_tls_cert_file=$(find /etc/postfix/certs -iname *.crt)
