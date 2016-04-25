@@ -1,10 +1,11 @@
-From ubuntu:trusty
-MAINTAINER Elliott Ye
+FROM ubuntu:14.04
+
+MAINTAINER Benoît "XtremXpert" Vézina  <xtremxpert@xtremxpert.com>
 
 # Set noninteractive mode for apt-get
 ENV DEBIAN_FRONTEND noninteractive
 
-# Update
+# Update & install
 RUN apt-get update \
   && apt-get -y install \
     supervisor \
