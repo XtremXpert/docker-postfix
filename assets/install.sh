@@ -26,9 +26,21 @@ service postfix start
 tail -f /var/log/mail.log
 EOF
 chmod +x /opt/postfix.sh
-postconf -e myhostname=$maildomain
+#postconf -e myhostname=$maildomain
 postconf -F '*/*/chroot = n'
-
+############
+postconf -e 'home_mailbox = Maildir/'
+postconf -e 'smtpd_banner = $myhostname Tagazok !'
+postconf -e 'mail_name = PiouPiou'
+postconf -e 'mail_version = 6.6.6'
+postconf -e 'inet_interfaces = all'
+postconf -e 'inet_protocols = ipv4'
+postconf -e 'myhostname = poste.xtremxpert.com'
+postconf -e 'mydomain = xtremxpert.com'
+postconf -e 'myorigin = xtremxpert.com'
+postconf -e 'mydestination = xtremxpert.com'
+postconf -e 'mynetworks = 127.0.0.0/8,192.99.24.64/28'
+postconf -e 'relay_domains = xtremxpert.com'
 ############
 # SASL SUPPORT FOR CLIENTS
 # The following options set parameters needed by Postfix to enable
