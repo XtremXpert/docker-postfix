@@ -1,0 +1,8 @@
+user = VAR_SQLUSR
+password = VAR_SQLPWD
+hosts = VAR_SQLHOST
+dbname = VAR_SQLDB
+table = alias
+select_field = goto
+where_field = address
+additional_conditions = and active = '1'
