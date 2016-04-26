@@ -12,6 +12,7 @@ RUN apt-get update \
     postfix 
 
 # Add files
+ADD config/ /etc/postfix/
 ADD assets/install.sh /opt/install.sh
 
 # Run
