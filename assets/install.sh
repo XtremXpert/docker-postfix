@@ -44,6 +44,17 @@ postconf -e 'relay_domains = xtremxpert.com'
 postconf -e 'mailbox_size_limit = 0'
 postconf -e 'recipient_delimiter = +'
 ############
+# MySQL
+# Configuration to use the table 
+# create from postfixadmin
+############
+postconf -e 'virtual_mailbox_base = /var/vmail'
+postconf -e 'virtual_mailbox_maps = mysql:/etc/postfix/mysql_virtual_mailbox_maps.cf, mysql:/etc/postfix/mysql_virtual_mailbox_domainaliases_maps.cf'
+postconf -e 'virtual_uid_maps = static:150'
+postconf -e 'virtual_gid_maps = static:8'
+postconf -e 'virtual_alias_maps = mysql:/etc/postfix/mysql_virtual_alias_maps.cf, mysql:/etc/postfix/mysql_virtual_alias_domainaliases_maps.cf'
+postconf -e 'virtual_mailbox_domains = mysql:/etc/postfix/mysql_virtual_domains_maps.cf'
+############
 # SASL SUPPORT FOR CLIENTS
 # The following options set parameters needed by Postfix to enable
 # Cyrus-SASL support for authentication of mail clients.
