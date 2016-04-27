@@ -9,8 +9,10 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update \
   && apt-get -y install \
     supervisor \
-    postfix 
-
+    postfix \ 
+    postfix-pcre \
+    postfix-mysql \
+    ca-certificates
 # Add files
 ADD config/ /etc/postfix/
 ADD assets/install.sh /opt/install.sh
