@@ -3,7 +3,11 @@ FROM ubuntu:14.04
 MAINTAINER Benoît "XtremXpert" Vézina  <xtremxpert@xtremxpert.com>
 
 # Set noninteractive mode for apt-get
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
+  db_host=mariadb
+  db_user=mailserveruser
+  db_pass=mailserverpass
+  db_name=mailserver
 
 # Update & install
 RUN apt-get update \
