@@ -159,6 +159,7 @@ EOF
 # Activate submission port as an alternative to send mail
 # Will accept only secure
 ############
+postconf -M smtp/inet="smtp   inet   n   -   -   -   -   smtpd"
 postconf -M submission/inet="submission   inet   n   -   -   -   -   smtpd"
 postconf -P "submission/inet/syslog_name=postfix/submission"
 #postconf -p "submission/inet/smtpd_tls_wrappermode=no"
