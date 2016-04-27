@@ -55,6 +55,81 @@ postconf -e 'virtual_gid_maps = static:8'
 postconf -e 'virtual_alias_maps = mysql:/etc/postfix/mysql_virtual_alias_maps.cf, mysql:/etc/postfix/mysql_virtual_alias_domainaliases_maps.cf'
 postconf -e 'virtual_mailbox_domains = mysql:/etc/postfix/mysql_virtual_domains_maps.cf'
 ############
+# Lien Postfix - MySQL
+# Configuration to use the tables 
+# for domains alias
+############
+cat >> /etc/postfix/mysql_virtual_alias_domainaliases_maps.cf <<EOF
+user = mailserveruser
+password = mailserverpass
+hosts = mariadb
+dbname = mailserver
+query = SELECT goto FROM alias,alias_domain
+  WHERE alias_domain.alias_domain = '%d'
+  AND alias.address=concat('%u', '@', alias_domain.target_domain)
+  AND alias.active = 1
+EOF
+############
+# Lien Postfix - MySQL
+# Configuration to use the tables 
+# for alias
+############
+cat >> /etc/postfix/mysql_virtual_alias_maps.cf <<EOF
+user = mailserveruser
+password = mailserverpass
+hosts = mariadb
+dbname = mailserver
+table = alias
+select_field = goto
+where_field = address
+additional_conditions = and active = '1'
+EOF
+############
+# Lien Postfix - MySQL
+# Configuration to use the tables 
+# for Domains
+############
+cat >> /etc/postfix/mysql_virtual_domains_maps.cf <<EOF
+user = mailserveruser
+password = mailserverpass
+hosts = mariadb
+dbname = mailserver
+table = domain
+select_field = domain
+where_field = domain
+additional_conditions = and backupmx = '0' and active = '1'
+EOF
+############
+# Lien Postfix - MySQL
+# Configuration to use the tables 
+# for Domains
+############
+cat >> /etc/postfix/mysql_virtual_mailbox_domainaliases_maps.cf <<EOF
+user = mailserveruser
+password = mailserverpass
+hosts = mariadb
+dbname = mailserver
+query = SELECT maildir FROM mailbox, alias_domain
+  WHERE alias_domain.alias_domain = '%d'
+  AND mailbox.username=concat('%u', '@', alias_domain.target_domain )
+  AND mailbox.active = 1
+EOF
+############
+# Lien Postfix - MySQL
+# Configuration to use the tables 
+# for Mailbox
+############
+cat >> /etc/postfix/mysql_virtual_mailbox_maps.cf <<EOF
+user = mailserveruser
+password = mailserverpass
+hosts = mariadb
+dbname = mailserver
+table = mailbox
+select_field = CONCAT(domain, '/', local_part)
+where_field = username
+additional_conditions = and active = '1'
+EOF
+############
 # SASL SUPPORT FOR CLIENTS
 # The following options set parameters needed by Postfix to enable
 # Cyrus-SASL support for authentication of mail clients.
