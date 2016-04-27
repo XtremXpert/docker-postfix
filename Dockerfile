@@ -4,10 +4,6 @@ MAINTAINER Benoît "XtremXpert" Vézina  <xtremxpert@xtremxpert.com>
 
 # Set noninteractive mode for apt-get
 ENV DEBIAN_FRONTEND=noninteractive
-  DB_HOST=mariadb
-  DB_USER=mailserveruser
-  DB_PASS=mailserverpass
-  DB_NAME=mailserver
 
 # Update & install
 RUN apt-get update \
