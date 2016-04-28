@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 #judgement
 if [[ -a /etc/supervisor/conf.d/supervisord.conf ]]; then
@@ -25,6 +26,7 @@ cat >> /opt/postfix.sh <<EOF
 service postfix start
 tail -f /var/log/mail.log
 EOF
+
 chmod +x /opt/postfix.sh
 #postconf -e myhostname=$maildomain
 postconf -F '*/*/chroot = n'
@@ -43,6 +45,8 @@ postconf -e 'mynetworks = 127.0.0.0/8,192.99.24.64/28'
 postconf -e 'relay_domains = xtremxpert.com'
 postconf -e 'mailbox_size_limit = 0'
 postconf -e 'recipient_delimiter = +'
+postconf -e 'mailbox_transport = lmtp:unix:private/dovecot-lmtp'
+postconf -e 'message_size_limit = 134217728'
 ############
 # MySQL
 # Configuration to use the table 
@@ -162,6 +166,8 @@ EOF
 postconf -M smtp/inet="smtp   inet   n   -   -   -   -   smtpd"
 postconf -M submission/inet="submission   inet   n   -   -   -   -   smtpd"
 postconf -P "submission/inet/syslog_name=postfix/submission"
+# FIXME Re-add DKIM
+#-o smtpd_milters=inet:127.0.0.1:8891
 #postconf -p "submission/inet/smtpd_tls_wrappermode=no"
 postconf -P "submission/inet/smtpd_tls_security_level=encrypt"
 postconf -P "submission/inet/smtpd_sasl_auth_enable=yes"
