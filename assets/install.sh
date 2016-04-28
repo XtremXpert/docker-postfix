@@ -45,7 +45,7 @@ postconf -e 'mynetworks = 127.0.0.0/8,192.99.24.64/28'
 postconf -e 'relay_domains = xtremxpert.com'
 postconf -e 'mailbox_size_limit = 0'
 postconf -e 'recipient_delimiter = +'
-postconf -e 'mailbox_transport = lmtp:unix:private/dovecot-lmtp'
+postconf -e 'virtual_transport = lmtp:dovecot:10026'
 postconf -e 'message_size_limit = 134217728'
 ############
 # MySQL
