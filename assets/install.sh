@@ -164,6 +164,7 @@ EOF
 # Will accept only secure
 ############
 postconf -M smtp/inet="smtp   inet   n   -   -   -   -   smtpd"
+postconf -M smtps/inet="smtps   inet   n   -   -   -   -   smtpd"
 postconf -M submission/inet="submission   inet   n   -   -   -   -   smtpd"
 postconf -P "submission/inet/syslog_name=postfix/submission"
 # FIXME Re-add DKIM
