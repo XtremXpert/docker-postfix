@@ -53,8 +53,8 @@ postconf -e 'message_size_limit = 134217728'
 ############
 postconf -e 'virtual_mailbox_base = /var/vmail'
 postconf -e 'virtual_mailbox_maps = mysql:/etc/postfix/mysql_virtual_mailbox_maps.cf, mysql:/etc/postfix/mysql_virtual_mailbox_domainaliases_maps.cf'
-postconf -e 'virtual_uid_maps = static:150'
-postconf -e 'virtual_gid_maps = static:8'
+postconf -e 'virtual_uid_maps = static:5000'
+postconf -e 'virtual_gid_maps = static:5000'
 postconf -e 'virtual_alias_maps = mysql:/etc/postfix/mysql_virtual_alias_maps.cf, mysql:/etc/postfix/mysql_virtual_alias_domainaliases_maps.cf'
 postconf -e 'virtual_mailbox_domains = mysql:/etc/postfix/mysql_virtual_domains_maps.cf'
 ############
