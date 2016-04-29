@@ -16,7 +16,7 @@ RUN apt-get update \
 # Add files
 ADD assets/install.sh /opt/install.sh
 
-RUN roupadd -g 5000 vmail \
+RUN groupadd -g 5000 vmail \
   && useradd -m -d /var/vmail -s /bin/false -u 5000 -g vmail vmail \
   && chown vmail:vmail /var/vmail/ \
   && chmod 2770 /var/vmail/ \
