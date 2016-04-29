@@ -140,7 +140,7 @@ EOF
 # /etc/postfix/main.cf
 postconf -e 'smtpd_tls_auth_only = yes'
 postconf -e 'smtpd_sasl_type = dovecot'
-postconf -e 'smtpd_sasl_path = inet:dovecot.example.com:12345'
+postconf -e 'smtpd_sasl_path = inet:dovecot:12345'
 #postconf -e 'smtpd_sasl_path = private/auth'
 postconf -e 'smtpd_sasl_auth_enable=yes'
 #postconf -e broken_sasl_auth_clients=yes
