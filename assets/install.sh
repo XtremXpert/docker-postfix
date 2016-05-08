@@ -46,6 +46,7 @@ postconf -e 'mailbox_size_limit = 0'
 postconf -e 'recipient_delimiter = +'
 postconf -e 'virtual_transport = virtual'
 postconf -e 'message_size_limit = 134217728'
+postconf -e 'virtual_mailbox_limit = 1342177280'
 ############
 # MySQL
 # Configuration to use the table 
