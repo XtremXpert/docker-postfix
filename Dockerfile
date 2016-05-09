@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM ubuntu:latest
 
 MAINTAINER Benoît "XtremXpert" Vézina  <xtremxpert@xtremxpert.com>
 
@@ -12,13 +12,12 @@ RUN apt-get update \
     postfix \ 
     postfix-pcre \
     postfix-mysql \
-    ca-certificates
+    ca-certificates \
+  && pip install envtpl \
 # Add files
 ADD assets/install.sh /opt/install.sh
 
-#RUN useradd -m -d /var/vmail -s /bin/false -u 150 -g mail vmail \
-#  && chown vmail:mail /var/vmail/ \
-#  && chmod 2770 /var/vmail/ \
-
+VOLUME /etc/letsencrypt
+EXPOSE 25 465 587
 # Run
 CMD /opt/install.sh;/usr/bin/supervisord -c /etc/supervisor/supervisord.conf
