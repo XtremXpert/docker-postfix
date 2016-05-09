@@ -14,7 +14,7 @@ RUN apt-get update \
     postfix-pcre \
     python-pip \
     supervisor \
-  && pip install envtpl \
+  && pip install envtpl
 # Add files
 #ADD assets/install.sh /opt/install.sh
 COPY rootfs /
