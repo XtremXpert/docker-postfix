@@ -13,6 +13,7 @@ RUN apt-get update \
     postfix-mysql \
     postfix-pcre \
     python-pip \
+    rsyslog \
     supervisor \
   && pip install envtpl
 # Add files
