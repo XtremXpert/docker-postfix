@@ -20,4 +20,4 @@ ADD assets/install.sh /opt/install.sh
 VOLUME /etc/letsencrypt
 EXPOSE 25 465 587
 # Run
-CMD /opt/install.sh;/usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+CMD /usr/local/bin/startup
