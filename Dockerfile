@@ -19,7 +19,7 @@ RUN apt-get update \
 # Add files
 #ADD assets/install.sh /opt/install.sh
 COPY rootfs /
-RUN chmod +x /usr/local/bin/startup
+RUN chmod +x /usr/local/bin/*
 VOLUME /etc/letsencrypt
 EXPOSE 25 465 587
 # Run
