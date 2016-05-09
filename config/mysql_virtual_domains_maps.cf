@@ -1,8 +1,0 @@
-user = VAR_SQLUSR
-password = VAR_SQLPWD
-hosts = VAR_SQLHOST
-dbname = VAR_SQLDB
-table = domain
-select_field = domain
-where_field = domain
-additional_conditions = and backupmx = '0' and active = '1'
