@@ -8,11 +8,12 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Update & install
 RUN apt-get update \
   && apt-get -y install \
-    supervisor \
-    postfix \ 
-    postfix-pcre \
-    postfix-mysql \
     ca-certificates \
+    postfix \ 
+    postfix-mysql \
+    postfix-pcre \
+    python-pip \
+    supervisor \
   && pip install envtpl \
 # Add files
 #ADD assets/install.sh /opt/install.sh
