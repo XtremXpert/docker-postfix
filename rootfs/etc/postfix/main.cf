@@ -20,7 +20,7 @@ inet_protocols = all
 myhostname    = {{ FQDN }}
 myorigin      = {{ FQDN }}
 mydestination = localhost localhost.$mydomain
-mynetworks    = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+mynetworks    = 127.0.0.0/8 172.17.0.0/16 10.42.0.0/16 [::ffff:127.0.0.0]/104 [::1]/128
 
 alias_maps     = hash:/etc/aliases
 alias_database = hash:/etc/aliases
@@ -83,7 +83,7 @@ virtual_uid_maps        = static:{{ VMAILUID }}
 virtual_gid_maps        = static:{{ VMAILGID }}
 virtual_minimum_uid     = {{ VMAILUID }}
 virtual_mailbox_base    = /var/mail
-virtual_transport       = lmtp:unix:private/dovecot-lmtp
+virtual_transport       = lmtp:inet:dovecot:10026
 virtual_mailbox_domains = mysql:/etc/postfix/mysql/mysql-virtual-mailbox-domains.cf
 virtual_mailbox_maps    = mysql:/etc/postfix/mysql/mysql-virtual-mailbox-maps.cf
 virtual_alias_maps      = mysql:/etc/postfix/mysql/mysql-virtual-alias-maps.cf
@@ -173,19 +173,3 @@ smtpd_helo_restrictions =
     permit_sasl_authenticated,
     reject_invalid_helo_hostname,
     reject_non_fqdn_helo_hostname
-
-############
-## AMAVIS ##
-############
-
-content_filter = amavis:[127.0.0.1]:10024
-receive_override_options = no_address_mappings
-
-##########################
-## MILTERS (DKIM/DMARC) ##
-##########################
-
-milter_protocol       = 6
-milter_default_action = accept
-smtpd_milters         = inet:localhost:12301,inet:localhost:54321
-non_smtpd_milters     = $smtpd_milters
