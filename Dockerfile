@@ -15,7 +15,8 @@ RUN apt-get update \
     ca-certificates \
   && pip install envtpl \
 # Add files
-ADD assets/install.sh /opt/install.sh
+#ADD assets/install.sh /opt/install.sh
+COPY rootfs /
 
 VOLUME /etc/letsencrypt
 EXPOSE 25 465 587
