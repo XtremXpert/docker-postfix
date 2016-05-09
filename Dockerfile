@@ -22,4 +22,6 @@ COPY rootfs /
 VOLUME /etc/letsencrypt
 EXPOSE 25 465 587
 # Run
-CMD /usr/local/bin/startup
+CMD ["sh","/usr/local/bin/startup"]
+
+
