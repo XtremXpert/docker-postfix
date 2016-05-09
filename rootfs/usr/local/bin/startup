@@ -1,0 +1,117 @@
+#!/bin/bash
+
+trap "{ echo Stopping mailserver; supervisorctl stop all; exit 0; }" EXIT
+
+# ENV
+export FQDN
+export DOMAIN
+export VMAILUID
+export VMAILGID
+export DBHOST
+export DBNAME
+export DBUSER
+export CAFILE
+export CERTFILE
+export KEYFILE
+export FULLCHAIN
+
+FQDN=$(hostname --fqdn)
+DOMAIN=$(hostname --domain)
+VMAILUID=${VMAILUID:-1024}
+VMAILGID=${VMAILGID:-1024}
+DBHOST=${DBHOST:-mariadb}
+DBNAME=${DBNAME:-postfix}
+DBUSER=${DBUSER:-postfix}
+ADD_DOMAINS=${ADD_DOMAINS:-}
+
+if [ -z "$DBPASS" ]; then
+  echo "Mariadb database password must be set !"
+  exit 1
+fi
+
+# SSL certificates
+LETS_ENCRYPT_LIVE_PATH=/etc/letsencrypt/live/"$FQDN"
+
+if [ -d "$LETS_ENCRYPT_LIVE_PATH" ]; then
+  FULLCHAIN="$LETS_ENCRYPT_LIVE_PATH"/fullchain.pem
+  CAFILE="$LETS_ENCRYPT_LIVE_PATH"/chain.pem
+  CERTFILE="$LETS_ENCRYPT_LIVE_PATH"/cert.pem
+  KEYFILE="$LETS_ENCRYPT_LIVE_PATH"/privkey.pem
+
+  # When using https://github.com/JrCs/docker-nginx-proxy-letsencrypt
+  # and https://github.com/jwilder/nginx-proxy there is only key.pem and fullchain.pem
+  # so we look for key.pem and extract cert.pem and chain.pem
+  if [ ! -e "$KEYFILE" ]; then
+    KEYFILE="$LETS_ENCRYPT_LIVE_PATH"/key.pem
+  fi
+
+  if [ ! -e "$KEYFILE" ]; then
+    echo "No keyfile found in $LETS_ENCRYPT_LIVE_PATH !"
+    exit 1
+  fi
+
+  if [ ! -e "$CAFILE" ] || [ ! -e "$CERTFILE" ]; then
+    if [ ! -e "$FULLCHAIN" ]; then
+      echo "No fullchain found in $LETS_ENCRYPT_LIVE_PATH !"
+      exit 1
+    fi
+
+    awk -v path="$LETS_ENCRYPT_LIVE_PATH" 'BEGIN {c=0;} /BEGIN CERT/{c++} { print > path"/cert" c ".pem"}' < "$FULLCHAIN"
+    mv "$LETS_ENCRYPT_LIVE_PATH"/cert1.pem "$CERTFILE"
+    mv "$LETS_ENCRYPT_LIVE_PATH"/cert2.pem "$CAFILE"
+  fi
+
+else
+  FULLCHAIN=/var/mail/ssl/selfsigned/cert.pem
+  CAFILE=
+  CERTFILE=/var/mail/ssl/selfsigned/cert.pem
+  KEYFILE=/var/mail/ssl/selfsigned/privkey.pem
+
+  if [ ! -e "$CERTFILE" ] || [ ! -e "$KEYFILE" ]; then
+    mkdir -p /var/mail/ssl/selfsigned/
+    openssl req -new -newkey rsa:4096 -days 3658 -sha256 -nodes -x509 \
+      -subj "/C=FR/ST=France/L=Paris/O=Mailserver certificate/OU=Mail/CN=*.${DOMAIN}/emailAddress=admin@${DOMAIN}" \
+      -keyout "$KEYFILE" \
+      -out "$CERTFILE"
+  fi
+fi
+
+# Diffie-Hellman parameters
+if [ ! -e /var/mail/ssl/dhparams/dh2048.pem ] || [ ! -e /var/mail/ssl/dhparams/dh512.pem ]; then
+  mkdir -p /var/mail/ssl/dhparams/
+  openssl dhparam -out /var/mail/ssl/dhparams/dh2048.pem 2048
+  openssl dhparam -out /var/mail/ssl/dhparams/dh512.pem 512
+fi
+
+# Add domains from ENV DOMAIN and ADD_DOMAINS
+domains=(${DOMAIN})
+domains+=(${ADD_DOMAINS//,/ })
+
+for domain in "${domains[@]}"; do
+  # Add vhost
+  mkdir -p /var/mail/vhosts/"$domain"
+done
+
+if [ ! -d "$LETS_ENCRYPT_LIVE_PATH" ]; then
+  sed -i '/^\(smtp_tls_CAfile\|smtpd_tls_CAfile\)/s/^/#/' /etc/postfix/main.cf
+fi
+
+# Replace {{ ENV }} vars
+_envtpl() {
+  mv "$1" "$1.tpl" # envtpl requires files to have .tpl extension
+  envtpl "$1.tpl"
+}
+
+_envtpl /etc/postfix/main.cf
+_envtpl /etc/postfix/header_checks
+_envtpl /etc/postfix/mysql/mysql-virtual-alias-maps.cf
+_envtpl /etc/postfix/mysql/mysql-virtual-mailbox-domains.cf
+_envtpl /etc/postfix/mysql/mysql-virtual-mailbox-maps.cf
+_envtpl /etc/postfix/mysql/mysql-sender-login-maps.cf
+_envtpl /etc/mailname
+
+# Supervisor socket
+touch /dev/shm/supervisor.sock
+
+# RUN !
+/usr/bin/supervisord -c /etc/supervisor/supervisord.conf
