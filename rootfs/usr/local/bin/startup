@@ -46,6 +46,10 @@ if [ -d "$LETS_ENCRYPT_LIVE_PATH" ]; then
   fi
 
   if [ ! -e "$KEYFILE" ]; then
+    KEYFILE="$LETS_ENCRYPT_LIVE_PATH"/private.pem
+  fi
+  
+  if [ ! -e "$KEYFILE" ]; then
     echo "No keyfile found in $LETS_ENCRYPT_LIVE_PATH !"
     exit 1
   fi
