@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM debian:latest
 
 MAINTAINER Benoît "XtremXpert" Vézina  <xtremxpert@xtremxpert.com>
 
