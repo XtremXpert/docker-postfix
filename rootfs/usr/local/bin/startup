@@ -111,7 +111,7 @@ _envtpl /etc/postfix/header_checks
 _envtpl /etc/postfix/mysql/mysql-virtual-alias-maps.cf
 _envtpl /etc/postfix/mysql/mysql-virtual-mailbox-domains.cf
 _envtpl /etc/postfix/mysql/mysql-virtual-mailbox-maps.cf
-_envtpl /etc/postfix/mysql/mysql-sender-login-maps.cf
+_envtpl /etc/postfix/mysql/mysql-smtpd-sender-login-maps.cf
 _envtpl /etc/mailname
 
 # Supervisor socket
