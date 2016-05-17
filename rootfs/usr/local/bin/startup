@@ -117,5 +117,19 @@ _envtpl /etc/mailname
 # Supervisor socket
 touch /dev/shm/supervisor.sock
 
+# PostFix Setup
+postconf -e virtual_alias_maps=proxy:mysql:/etc/postfix/mysql/virtual_alias_maps.cf
+postconf -e virtual_mailbox_domains=proxy:mysql:/etc/postfix/mysql/virtual_domains_maps.cf
+postconf -e virtual_mailbox_maps=proxy:mysql:/etc/postfix/mysql/virtual_mailbox_maps.cf
+postconf -e virtual_mailbox_base=/var/mail/vmail
+postconf -e virtual_mailbox_limit=512000000
+postconf -e virtual_minimum_uid=1024
+postconf -e virtual_transport=virtual
+postconf -e virtual_uid_maps=static:1024
+postconf -e virtual_gid_maps=static:1024
+postconf -e local_transport=virtual
+postconf -e local_recipient_maps=\$virtual_mailbox_maps
+postconf -e transport_maps=hash:/etc/postfix/transport
+
 # RUN !
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
